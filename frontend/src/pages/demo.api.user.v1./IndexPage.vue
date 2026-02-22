@@ -1,0 +1,77 @@
+<template>
+  <q-page padding>
+    <div class="row items-center q-mb-md">
+      <div class="text-h5">Demo.api.user.v1.s</div>
+      <q-space />
+      <q-btn color="primary" icon="add" label="Create" @click="onCreate" />
+    </div>
+
+    <q-table
+      :rows="items"
+      :columns="columns"
+      :loading="isLoading"
+      row-key="Id"
+      v-model:pagination="pagination"
+      binary-state-sort
+      @request="onRequest"
+    >
+      <template #body-cell-actions="props">
+        <q-td :props="props">
+          <q-btn flat dense icon="visibility" :to="'/demo.api.user.v1.s/' + props.row.Id" />
+          <q-btn flat dense icon="edit" @click="onEdit(props.row)" />
+          <q-btn flat dense icon="delete" color="negative" @click="onDelete(props.row.Id)" />
+        </q-td>
+      </template>
+    </q-table>
+
+    <FormDialog v-model="dialogOpen" :item="editedItem" @saved="onSaved" />
+  </q-page>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useQuasar } from 'quasar';
+import { useDemo.api.user.v1. } from '../../composables/useDemo.api.user.v1.';
+import FormDialog from './FormDialog.vue';
+
+const $q = useQuasar();
+const { items, isLoading, pagination, onRequest, remove } = useDemo.api.user.v1.();
+
+const dialogOpen = ref(false);
+const editedItem = ref<any>(null);
+
+const columns = [
+  { name: 'Age', label: 'Age', field: 'Age', sortable: true, align: 'right' as const },
+  { name: 'Id', label: 'Id', field: 'Id', sortable: true, align: 'right' as const },
+  { name: 'Name', label: 'Name', field: 'Name', sortable: true, align: 'left' as const },
+  { name: 'Status', label: 'Status', field: 'Status', sortable: true, align: 'left' as const },
+  { name: 'list', label: 'List', field: 'list', sortable: false, align: 'left' as const },
+  { name: 'actions', label: 'Actions', field: 'actions', align: 'center' as const },
+];
+
+function onCreate() {
+  editedItem.value = null;
+  dialogOpen.value = true;
+}
+
+function onEdit(row: any) {
+  editedItem.value = { ...row };
+  dialogOpen.value = true;
+}
+
+function onSaved() {
+  dialogOpen.value = false;
+  editedItem.value = null;
+}
+
+function onDelete(id: any) {
+  $q.dialog({
+    title: 'Confirm',
+    message: 'Delete this demo.api.user.v1.?',
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    await remove(id);
+  });
+}
+</script>
