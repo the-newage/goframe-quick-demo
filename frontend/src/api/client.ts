@@ -1,5 +1,6 @@
 // Auto-generated API client — do not edit manually.
 import axios from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 
 const api = axios.create({
   baseURL: '/api',
@@ -53,6 +54,18 @@ export async function fetchRelationOptions(
     label: String(item[labelField] || item[valueField] || ''),
     value: item[valueField],
   }));
+}
+
+// The mutator Orval uses
+export async function callApi<T = unknown>(
+  config: AxiosRequestConfig,
+  // Orval may pass a second argument (rarely used), we can ignore it
+  _options?: unknown,
+): Promise<T> {
+  const response = await api(config);
+  // unwrap expects { data: GFResponse<T> } – the axios response object already has
+  // a `data` property that is exactly that, so we can pass `response` directly.
+  return unwrap<T>(response);
 }
 
 export default api;

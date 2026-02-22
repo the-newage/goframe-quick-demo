@@ -16,7 +16,7 @@ export default defineConfig({
       override: {
         mutator: {
           path: './src/api/client.ts',
-          name: 'default',
+          name: 'callApi',
         },
       },
     },
