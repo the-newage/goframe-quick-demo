@@ -15,4 +15,6 @@ output/
 manifest/output/
 temp/
 temp.yaml
-bin
+openapi.json
+schema.logical.json
+demo

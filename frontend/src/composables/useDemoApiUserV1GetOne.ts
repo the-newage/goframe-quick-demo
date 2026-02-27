@@ -1,24 +1,24 @@
-// Auto-generated composable for Demo.internal.model.entity.user — do not edit manually.
+// Auto-generated composable for DemoApiUserV1GetOne — do not edit manually.
 //
 // TYPE-SAFE REWIRING (after running Orval):
-//   import type { Demo.internal.model.entity.user } from '../api/gen/schemas';
-//   const items = computed<Demo.internal.model.entity.user[]>(() => listData.value || []);
+//   import type { DemoApiUserV1GetOne } from '../api/gen/schemas';
+//   const items = computed<DemoApiUserV1GetOne[]>(() => listData.value || []);
 //
 import { ref, computed, type Ref } from 'vue';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
-import api, { unwrap } from '../api/client';
+import { api, unwrap } from '../api/client';
 
-const ENTITY_PATH = '/api/demo.internal.model.entity.users';
-const QUERY_KEY = 'demo.internal.model.entity.users';
+const ENTITY_PATH = '/api/demo-api-user-v1get-ones';
+const QUERY_KEY = 'demoApiUserV1getOnes';
 
-export function useDemo.internal.model.entity.user() {
+export function useDemoApiUserV1GetOne() {
   const queryClient = useQueryClient();
 
   const pagination = ref({
     page: 1,
     rowsPerPage: 15,
     rowsNumber: 0,
-    sortBy: 'id',
+    sortBy: 'Id',
     descending: false,
   });
 
@@ -42,6 +42,7 @@ export function useDemo.internal.model.entity.user() {
           orderDirection: p.descending ? 'desc' : 'asc',
         },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const payload = unwrap<any>(res);
       const list = Array.isArray(payload) ? payload : payload?.list || payload?.items || [];
       const total = payload?.total ?? payload?.totalCount ?? list.length;
@@ -62,6 +63,7 @@ export function useDemo.internal.model.entity.user() {
       queryFn: async () => {
         if (!id.value) return null;
         const res = await api.get(ENTITY_PATH + '/' + id.value);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return unwrap<any>(res);
       },
       enabled: computed(() => !!id.value),
@@ -69,17 +71,21 @@ export function useDemo.internal.model.entity.user() {
   }
 
   const { mutateAsync: create } = useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: async (data: any) => {
       const res = await api.post(ENTITY_PATH, data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return unwrap<any>(res);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
   });
 
   const { mutateAsync: update } = useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: async (data: any) => {
-      const { id: id, ...body } = data;
+      const { Id: id, ...body } = data;
       const res = await api.put(ENTITY_PATH + '/' + id, body);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return unwrap<any>(res);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
@@ -88,6 +94,7 @@ export function useDemo.internal.model.entity.user() {
   const { mutateAsync: remove } = useMutation({
     mutationFn: async (id: string | number) => {
       const res = await api.delete(ENTITY_PATH + '/' + id);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return unwrap<any>(res);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),

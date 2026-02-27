@@ -15,25 +15,25 @@
         <q-item>
           <q-item-section>
             <q-item-label caption>Age</q-item-label>
-            <q-item-label>{{ item.age }}</q-item-label>
+            <q-item-label>{{ item.Age }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item>
           <q-item-section>
             <q-item-label caption>Id</q-item-label>
-            <q-item-label>{{ item.id }}</q-item-label>
+            <q-item-label>{{ item.Id }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item>
           <q-item-section>
             <q-item-label caption>Name</q-item-label>
-            <q-item-label>{{ item.name }}</q-item-label>
+            <q-item-label>{{ item.Name }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item>
           <q-item-section>
             <q-item-label caption>Status</q-item-label>
-            <q-item-label>{{ item.status }}</q-item-label>
+            <q-item-label>{{ item.Status }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -52,6 +52,10 @@ import { useQuasar } from 'quasar';
 import { useUser } from '../../composables/useUser';
 import FormDialog from './FormDialog.vue';
 
+
+
+
+
 const route = useRoute();
 const router = useRouter();
 const $q = useQuasar();
@@ -61,18 +65,15 @@ const { useItem, remove } = useUser();
 const { data: itemData, isLoading } = useItem(entityId);
 const item = computed(() => itemData.value || null);
 
+
+
 const editDialogOpen = ref(false);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const editItem = ref<any>(null);
 
-function formatNested(val: any): string {
-  if (val === null || val === undefined) return '';
-  if (typeof val === 'object') return JSON.stringify(val, null, 2);
-  return String(val);
-}
 
-function isImageUrl(url: string): boolean {
-  return /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(url);
-}
+
+
 
 function onEdit() {
   editItem.value = item.value ? { ...item.value } : null;
@@ -89,9 +90,12 @@ function onDelete() {
     message: 'Delete this user?',
     cancel: true,
     persistent: true,
-  }).onOk(async () => {
-    await remove(entityId.value);
-    router.push('/users');
+  }).onOk(() => {
+    void (async () => {
+      await remove(entityId.value);
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      router.push('/users');
+    })();
   });
 }
 </script>

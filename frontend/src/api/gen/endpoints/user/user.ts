@@ -38,10 +38,8 @@ import type {
   PutUserIdBody
 } from '../../schemas';
 
-import { callApi } from '../../../client';
+import { default } from '../../../client';
 
-
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -77,7 +75,7 @@ export const getGetUserUrl = (params?: GetUserParams,) => {
 
 export const getUser = async (params?: GetUserParams, options?: RequestInit): Promise<getUserResponse> => {
   
-  return callApi<getUserResponse>(getGetUserUrl(params),
+  return default<getUserResponse>(getGetUserUrl(params),
   {      
     ...options,
     method: 'GET'
@@ -97,16 +95,16 @@ export const getGetUserQueryKey = (params?: MaybeRef<GetUserParams>,) => {
     }
 
     
-export const getGetUserQueryOptions = <TData = Awaited<ReturnType<typeof getUser>>, TError = unknown>(params?: MaybeRef<GetUserParams>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>>, request?: SecondParameter<typeof callApi>}
+export const getGetUserQueryOptions = <TData = Awaited<ReturnType<typeof getUser>>, TError = unknown>(params?: MaybeRef<GetUserParams>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  getGetUserQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUser>>> = ({ signal }) => getUser(unref(params), { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUser>>> = ({ signal }) => getUser(unref(params), { signal });
 
       
 
@@ -124,7 +122,7 @@ export type GetUserQueryError = unknown
  */
 
 export function useGetUser<TData = Awaited<ReturnType<typeof getUser>>, TError = unknown>(
- params?: MaybeRef<GetUserParams>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>>, request?: SecondParameter<typeof callApi>}
+ params?: MaybeRef<GetUserParams>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ): UseQueryReturnType<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -165,7 +163,7 @@ export const getPostUserUrl = () => {
 
 export const postUser = async (demoApiUserV1CreateReq: DemoApiUserV1CreateReq, options?: RequestInit): Promise<postUserResponse> => {
   
-  return callApi<postUserResponse>(getPostUserUrl(),
+  return default<postUserResponse>(getPostUserUrl(),
   {      
     ...options,
     method: 'POST',
@@ -179,15 +177,15 @@ export const postUser = async (demoApiUserV1CreateReq: DemoApiUserV1CreateReq, o
 
 
 export const getPostUserMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUser>>, TError,{data: DemoApiUserV1CreateReq}, TContext>, request?: SecondParameter<typeof callApi>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUser>>, TError,{data: DemoApiUserV1CreateReq}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postUser>>, TError,{data: DemoApiUserV1CreateReq}, TContext> => {
 
 const mutationKey = ['postUser'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -195,7 +193,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUser>>, {data: DemoApiUserV1CreateReq}> = (props) => {
           const {data} = props ?? {};
 
-          return  postUser(data,requestOptions)
+          return  postUser(data,)
         }
 
 
@@ -213,7 +211,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Create user
  */
 export const usePostUser = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUser>>, TError,{data: DemoApiUserV1CreateReq}, TContext>, request?: SecondParameter<typeof callApi>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUser>>, TError,{data: DemoApiUserV1CreateReq}, TContext>, }
  , queryClient?: QueryClient): UseMutationReturnType<
         Awaited<ReturnType<typeof postUser>>,
         TError,
@@ -247,7 +245,7 @@ export const getDeleteUserIdUrl = (id: number,) => {
 
 export const deleteUserId = async (id: number, options?: RequestInit): Promise<deleteUserIdResponse> => {
   
-  return callApi<deleteUserIdResponse>(getDeleteUserIdUrl(id),
+  return default<deleteUserIdResponse>(getDeleteUserIdUrl(id),
   {      
     ...options,
     method: 'DELETE'
@@ -260,15 +258,15 @@ export const deleteUserId = async (id: number, options?: RequestInit): Promise<d
 
 
 export const getDeleteUserIdMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof callApi>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserId>>, TError,{id: number}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteUserId>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['deleteUserId'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -276,7 +274,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUserId>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteUserId(id,requestOptions)
+          return  deleteUserId(id,)
         }
 
 
@@ -294,7 +292,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Delete user
  */
 export const useDeleteUserId = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof callApi>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserId>>, TError,{id: number}, TContext>, }
  , queryClient?: QueryClient): UseMutationReturnType<
         Awaited<ReturnType<typeof deleteUserId>>,
         TError,
@@ -328,7 +326,7 @@ export const getGetUserIdUrl = (id: number,) => {
 
 export const getUserId = async (id: number, options?: RequestInit): Promise<getUserIdResponse> => {
   
-  return callApi<getUserIdResponse>(getGetUserIdUrl(id),
+  return default<getUserIdResponse>(getGetUserIdUrl(id),
   {      
     ...options,
     method: 'GET'
@@ -348,16 +346,16 @@ export const getGetUserIdQueryKey = (id: MaybeRef<number>,) => {
     }
 
     
-export const getGetUserIdQueryOptions = <TData = Awaited<ReturnType<typeof getUserId>>, TError = unknown>(id: MaybeRef<number>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>>, request?: SecondParameter<typeof callApi>}
+export const getGetUserIdQueryOptions = <TData = Awaited<ReturnType<typeof getUserId>>, TError = unknown>(id: MaybeRef<number>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  getGetUserIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserId>>> = ({ signal }) => getUserId(unref(id), { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserId>>> = ({ signal }) => getUserId(unref(id), { signal });
 
       
 
@@ -375,7 +373,7 @@ export type GetUserIdQueryError = unknown
  */
 
 export function useGetUserId<TData = Awaited<ReturnType<typeof getUserId>>, TError = unknown>(
- id: MaybeRef<number>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>>, request?: SecondParameter<typeof callApi>}
+ id: MaybeRef<number>, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ): UseQueryReturnType<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -417,7 +415,7 @@ export const getPutUserIdUrl = (id: number,) => {
 export const putUserId = async (id: number,
     putUserIdBody: PutUserIdBody, options?: RequestInit): Promise<putUserIdResponse> => {
   
-  return callApi<putUserIdResponse>(getPutUserIdUrl(id),
+  return default<putUserIdResponse>(getPutUserIdUrl(id),
   {      
     ...options,
     method: 'PUT',
@@ -431,15 +429,15 @@ export const putUserId = async (id: number,
 
 
 export const getPutUserIdMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUserId>>, TError,{id: number;data: PutUserIdBody}, TContext>, request?: SecondParameter<typeof callApi>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUserId>>, TError,{id: number;data: PutUserIdBody}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof putUserId>>, TError,{id: number;data: PutUserIdBody}, TContext> => {
 
 const mutationKey = ['putUserId'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -447,7 +445,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putUserId>>, {id: number;data: PutUserIdBody}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  putUserId(id,data,requestOptions)
+          return  putUserId(id,data,)
         }
 
 
@@ -465,7 +463,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Update user
  */
 export const usePutUserId = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUserId>>, TError,{id: number;data: PutUserIdBody}, TContext>, request?: SecondParameter<typeof callApi>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUserId>>, TError,{id: number;data: PutUserIdBody}, TContext>, }
  , queryClient?: QueryClient): UseMutationReturnType<
         Awaited<ReturnType<typeof putUserId>>,
         TError,

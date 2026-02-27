@@ -8,19 +8,19 @@
       <q-card-section class="scroll" style="max-height: 70vh">
         <q-form ref="formRef" @submit.prevent="onSubmit" class="q-gutter-md">
           <q-input
-            v-model="form.age"
+            v-model="form.Age"
             label="Age"
-            :rules="[]"
+            :rules="rules.Age"
           />
           <q-input
-            v-model="form.name"
+            v-model="form.Name"
             label="Name"
-            :rules="[]"
+            :rules="rules.Name"
           />
           <q-input
-            v-model="form.status"
+            v-model="form.Status"
             label="Status"
-            :rules="[]"
+            :rules="rules.Status"
           />
         </q-form>
       </q-card-section>
@@ -33,34 +33,62 @@
   </q-dialog>
 </template>
 
+
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
-import { useUser } from '../../composables/useUser';
-import { fetchRelationOptions } from '../../api/client';
+import { ref, reactive, computed, watch } from 'vue'
+
+import { useUser } from '../../composables/useUser'
+
+
+
+
+
+
 
 const props = defineProps<{
   modelValue: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   item: any | null;
 }>();
-const emit = defineEmits<{
-  (e: 'update:modelValue', val: boolean): void;
-  (e: 'saved'): void;
-}>();
 
-const { create, update } = useUser();
-const formRef = ref<any>(null);
-const saving = ref(false);
+const emit = defineEmits(['saved', 'cancel'])
 
-const isEdit = computed(() => props.item !== null);
 
+const saving = ref(false)
+
+const isEdit = computed(() => props.item !== null)
+
+const rules = computed(() => {
+  const manualRules = {
+    
+    Age: [],
+    
+    Name: [],
+    
+    Status: [],
+    
+  }
+
+  
+
+  return manualRules
+})
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const emptyForm: Record<string, any> = {
-  age: '',
-  name: '',
-  status: '',
-};
+  
+  Age: ' ',
+  
+  Name: ' ',
+  
+  Status: ' ',
+  
+}
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const form = reactive<Record<string, any>>({ ...emptyForm });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const relationOpts = reactive<Record<string, any[]>>({
 });
 
@@ -79,28 +107,12 @@ watch(() => props.item, (val) => {
   }
 }, { immediate: true });
 
-async function filterRelation(
-  val: string,
-  update: (fn: () => void) => void,
-  fieldName: string,
-  apiPath: string
-) {
-  const opts = await fetchRelationOptions(apiPath, val, 'name');
-  update(() => { relationOpts[fieldName] = opts; });
-}
 
-function onFileUploaded(info: any, fieldName: string) {
-  try {
-    const res = JSON.parse(info.xhr.responseText);
-    form[fieldName] = res?.data?.url || res?.url || '';
-  } catch { form[fieldName] = ''; }
-}
 
-function isImageUrl(url: string): boolean {
-  return /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(url);
-}
+
 
 // Parse JSON-string fields back to objects before sending to the API
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function preparePayload(data: Record<string, any>): Record<string, any> {
   const out = { ...data };
   for (const [key, val] of Object.entries(out)) {
@@ -115,6 +127,10 @@ function preparePayload(data: Record<string, any>): Record<string, any> {
   return out;
 }
 
+const { create, update } = useUser();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const formRef = ref<any>(null);
+
 async function onSubmit() {
   const valid = await formRef.value?.validate();
   if (!valid) return;
@@ -122,7 +138,7 @@ async function onSubmit() {
   try {
     const payload = preparePayload({ ...form });
     if (isEdit.value) {
-      await update({ id: props.item.id, ...payload });
+      await update({ Id: props.item.Id, ...payload });
     } else {
       await create(payload);
     }

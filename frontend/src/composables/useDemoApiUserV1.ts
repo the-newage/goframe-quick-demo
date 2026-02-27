@@ -1,17 +1,17 @@
-// Auto-generated composable for Demo.api.user.v1.getOne — do not edit manually.
+// Auto-generated composable for DemoApiUserV1 — do not edit manually.
 //
 // TYPE-SAFE REWIRING (after running Orval):
-//   import type { Demo.api.user.v1.getOne } from '../api/gen/schemas';
-//   const items = computed<Demo.api.user.v1.getOne[]>(() => listData.value || []);
+//   import type { DemoApiUserV1 } from '../api/gen/schemas';
+//   const items = computed<DemoApiUserV1[]>(() => listData.value || []);
 //
 import { ref, computed, type Ref } from 'vue';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
-import api, { unwrap } from '../api/client';
+import { api, unwrap } from '../api/client';
 
-const ENTITY_PATH = '/api/demo.api.user.v1.get-ones';
-const QUERY_KEY = 'demo.api.user.v1.getOnes';
+const ENTITY_PATH = '/api/demo-api-user-v1s';
+const QUERY_KEY = 'demoApiUserV1s';
 
-export function useDemo.api.user.v1.getOne() {
+export function useDemoApiUserV1() {
   const queryClient = useQueryClient();
 
   const pagination = ref({
@@ -42,6 +42,7 @@ export function useDemo.api.user.v1.getOne() {
           orderDirection: p.descending ? 'desc' : 'asc',
         },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const payload = unwrap<any>(res);
       const list = Array.isArray(payload) ? payload : payload?.list || payload?.items || [];
       const total = payload?.total ?? payload?.totalCount ?? list.length;
@@ -62,6 +63,7 @@ export function useDemo.api.user.v1.getOne() {
       queryFn: async () => {
         if (!id.value) return null;
         const res = await api.get(ENTITY_PATH + '/' + id.value);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return unwrap<any>(res);
       },
       enabled: computed(() => !!id.value),
@@ -69,17 +71,21 @@ export function useDemo.api.user.v1.getOne() {
   }
 
   const { mutateAsync: create } = useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: async (data: any) => {
       const res = await api.post(ENTITY_PATH, data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return unwrap<any>(res);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
   });
 
   const { mutateAsync: update } = useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: async (data: any) => {
       const { Id: id, ...body } = data;
       const res = await api.put(ENTITY_PATH + '/' + id, body);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return unwrap<any>(res);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
@@ -88,6 +94,7 @@ export function useDemo.api.user.v1.getOne() {
   const { mutateAsync: remove } = useMutation({
     mutationFn: async (id: string | number) => {
       const res = await api.delete(ENTITY_PATH + '/' + id);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return unwrap<any>(res);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),

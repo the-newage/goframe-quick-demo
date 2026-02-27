@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="row items-center q-mb-md">
-      <q-btn flat icon="arrow_back" label="Back" :to="'/demo.internal.model.entity.users'" />
+      <q-btn flat icon="arrow_back" label="Back" :to="'/demo-api-user-v1get-ones'" />
       <q-space />
       <q-btn flat icon="edit" label="Edit" @click="onEdit" />
       <q-btn flat icon="delete" label="Delete" color="negative" @click="onDelete" />
@@ -9,31 +9,13 @@
 
     <q-card v-if="item" flat bordered>
       <q-card-section>
-        <div class="text-h6">Demo.internal.model.entity.user Detail</div>
+        <div class="text-h6">Demo Api User V1get One Detail</div>
       </q-card-section>
       <q-list separator>
         <q-item>
           <q-item-section>
-            <q-item-label caption>Age</q-item-label>
-            <q-item-label>{{ item.age }}</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section>
             <q-item-label caption>Id</q-item-label>
-            <q-item-label>{{ item.id }}</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section>
-            <q-item-label caption>Name</q-item-label>
-            <q-item-label>{{ item.name }}</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section>
-            <q-item-label caption>Status</q-item-label>
-            <q-item-label>{{ item.status }}</q-item-label>
+            <q-item-label>{{ item.Id }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -49,30 +31,31 @@
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { useDemo.internal.model.entity.user } from '../../composables/useDemo.internal.model.entity.user';
+import { useDemoApiUserV1GetOne } from '../../composables/useDemoApiUserV1GetOne';
 import FormDialog from './FormDialog.vue';
+
+
+
+
 
 const route = useRoute();
 const router = useRouter();
 const $q = useQuasar();
 
 const entityId = computed(() => route.params.id as string);
-const { useItem, remove } = useDemo.internal.model.entity.user();
+const { useItem, remove } = useDemoApiUserV1GetOne();
 const { data: itemData, isLoading } = useItem(entityId);
 const item = computed(() => itemData.value || null);
 
+
+
 const editDialogOpen = ref(false);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const editItem = ref<any>(null);
 
-function formatNested(val: any): string {
-  if (val === null || val === undefined) return '';
-  if (typeof val === 'object') return JSON.stringify(val, null, 2);
-  return String(val);
-}
 
-function isImageUrl(url: string): boolean {
-  return /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(url);
-}
+
+
 
 function onEdit() {
   editItem.value = item.value ? { ...item.value } : null;
@@ -86,12 +69,15 @@ function onEditSaved() {
 function onDelete() {
   $q.dialog({
     title: 'Confirm',
-    message: 'Delete this demo.internal.model.entity.user?',
+    message: 'Delete this demoApiUserV1getOne?',
     cancel: true,
     persistent: true,
-  }).onOk(async () => {
-    await remove(entityId.value);
-    router.push('/demo.internal.model.entity.users');
+  }).onOk(() => {
+    void (async () => {
+      await remove(entityId.value);
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      router.push('/demo-api-user-v1get-ones');
+    })();
   });
 }
 </script>

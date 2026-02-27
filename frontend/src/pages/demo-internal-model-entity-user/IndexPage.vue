@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="row items-center q-mb-md">
-      <div class="text-h5">Demo.internal.model.entity.users</div>
+      <div class="text-h5">Demo Internal Model Entity Users</div>
       <q-space />
       <q-btn color="primary" icon="add" label="Create" @click="onCreate" />
     </div>
@@ -17,7 +17,7 @@
     >
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn flat dense icon="visibility" :to="'/demo.internal.model.entity.users/' + props.row.id" />
+          <q-btn flat dense icon="visibility" :to="'/demo-internal-model-entity-users/' + props.row.id" />
           <q-btn flat dense icon="edit" @click="onEdit(props.row)" />
           <q-btn flat dense icon="delete" color="negative" @click="onDelete(props.row.id)" />
         </q-td>
@@ -31,13 +31,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import { useDemo.internal.model.entity.user } from '../../composables/useDemo.internal.model.entity.user';
+import { useDemoInternalModelEntityUser } from '../../composables/useDemoInternalModelEntityUser';
 import FormDialog from './FormDialog.vue';
 
 const $q = useQuasar();
-const { items, isLoading, pagination, onRequest, remove } = useDemo.internal.model.entity.user();
+const { items, isLoading, pagination, onRequest, remove } = useDemoInternalModelEntityUser();
 
 const dialogOpen = ref(false);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const editedItem = ref<any>(null);
 
 const columns = [
@@ -53,6 +54,7 @@ function onCreate() {
   dialogOpen.value = true;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onEdit(row: any) {
   editedItem.value = { ...row };
   dialogOpen.value = true;
@@ -63,14 +65,15 @@ function onSaved() {
   editedItem.value = null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onDelete(id: any) {
   $q.dialog({
     title: 'Confirm',
-    message: 'Delete this demo.internal.model.entity.user?',
+    message: 'Delete this demoInternalModelEntityUser?',
     cancel: true,
     persistent: true,
-  }).onOk(async () => {
-    await remove(id);
+  }).onOk(() => {
+    void remove(id);
   });
 }
 </script>

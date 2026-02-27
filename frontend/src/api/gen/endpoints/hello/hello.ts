@@ -23,10 +23,8 @@ import type {
   DemoApiHelloV1HelloRes
 } from '../../schemas';
 
-import { callApi } from '../../../client';
+import { default } from '../../../client';
 
-
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -55,7 +53,7 @@ export const getGetHelloUrl = () => {
 
 export const getHello = async ( options?: RequestInit): Promise<getHelloResponse> => {
   
-  return callApi<getHelloResponse>(getGetHelloUrl(),
+  return default<getHelloResponse>(getGetHelloUrl(),
   {      
     ...options,
     method: 'GET'
@@ -75,16 +73,16 @@ export const getGetHelloQueryKey = () => {
     }
 
     
-export const getGetHelloQueryOptions = <TData = Awaited<ReturnType<typeof getHello>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHello>>, TError, TData>>, request?: SecondParameter<typeof callApi>}
+export const getGetHelloQueryOptions = <TData = Awaited<ReturnType<typeof getHello>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHello>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  getGetHelloQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHello>>> = ({ signal }) => getHello({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHello>>> = ({ signal }) => getHello({ signal });
 
       
 
@@ -102,7 +100,7 @@ export type GetHelloQueryError = unknown
  */
 
 export function useGetHello<TData = Awaited<ReturnType<typeof getHello>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHello>>, TError, TData>>, request?: SecondParameter<typeof callApi>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHello>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ): UseQueryReturnType<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="row items-center q-mb-md">
-      <div class="text-h5">Demo.api.user.v1.get Ones</div>
+      <div class="text-h5">Demo Api User V1get Ones</div>
       <q-space />
       <q-btn color="primary" icon="add" label="Create" @click="onCreate" />
     </div>
@@ -17,7 +17,7 @@
     >
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn flat dense icon="visibility" :to="'/demo.api.user.v1.get-ones/' + props.row.Id" />
+          <q-btn flat dense icon="visibility" :to="'/demo-api-user-v1get-ones/' + props.row.Id" />
           <q-btn flat dense icon="edit" @click="onEdit(props.row)" />
           <q-btn flat dense icon="delete" color="negative" @click="onDelete(props.row.Id)" />
         </q-td>
@@ -31,13 +31,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import { useDemo.api.user.v1.getOne } from '../../composables/useDemo.api.user.v1.getOne';
+import { useDemoApiUserV1GetOne } from '../../composables/useDemoApiUserV1GetOne';
 import FormDialog from './FormDialog.vue';
 
 const $q = useQuasar();
-const { items, isLoading, pagination, onRequest, remove } = useDemo.api.user.v1.getOne();
+const { items, isLoading, pagination, onRequest, remove } = useDemoApiUserV1GetOne();
 
 const dialogOpen = ref(false);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const editedItem = ref<any>(null);
 
 const columns = [
@@ -50,6 +51,7 @@ function onCreate() {
   dialogOpen.value = true;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onEdit(row: any) {
   editedItem.value = { ...row };
   dialogOpen.value = true;
@@ -60,14 +62,15 @@ function onSaved() {
   editedItem.value = null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onDelete(id: any) {
   $q.dialog({
     title: 'Confirm',
-    message: 'Delete this demo.api.user.v1.getOne?',
+    message: 'Delete this demoApiUserV1getOne?',
     cancel: true,
     persistent: true,
-  }).onOk(async () => {
-    await remove(id);
+  }).onOk(() => {
+    void remove(id);
   });
 }
 </script>

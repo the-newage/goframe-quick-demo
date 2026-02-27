@@ -2,11 +2,28 @@
   <q-dialog :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)" persistent>
     <q-card style="min-width: 500px; max-width: 700px">
       <q-card-section>
-        <div class="text-h6">{{ isEdit ? 'Edit' : 'Create' }} Demo.api.user.v1.get One</div>
+        <div class="text-h6">{{ isEdit ? 'Edit' : 'Create' }} Demo Internal Model Entity User</div>
       </q-card-section>
 
       <q-card-section class="scroll" style="max-height: 70vh">
         <q-form ref="formRef" @submit.prevent="onSubmit" class="q-gutter-md">
+          <q-input
+            v-model="form.age"
+            label="Age"
+            type="number"
+            :rules="rules.age"
+          />
+          <q-input
+            v-model="form.name"
+            label="Name"
+            :rules="rules.name"
+          />
+          <q-input
+            v-model="form.status"
+            label="Status"
+            type="number"
+            :rules="rules.status"
+          />
         </q-form>
       </q-card-section>
 
@@ -18,31 +35,62 @@
   </q-dialog>
 </template>
 
+
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
-import { useDemo.api.user.v1.getOne } from '../../composables/useDemo.api.user.v1.getOne';
-import { fetchRelationOptions } from '../../api/client';
+import { ref, reactive, computed, watch } from 'vue'
+
+import { useDemoInternalModelEntityUser } from '../../composables/useDemoInternalModelEntityUser'
+
+
+
+
+
+
 
 const props = defineProps<{
   modelValue: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   item: any | null;
 }>();
-const emit = defineEmits<{
-  (e: 'update:modelValue', val: boolean): void;
-  (e: 'saved'): void;
-}>();
 
-const { create, update } = useDemo.api.user.v1.getOne();
-const formRef = ref<any>(null);
-const saving = ref(false);
+const emit = defineEmits(['saved', 'cancel'])
 
-const isEdit = computed(() => props.item !== null);
 
+const saving = ref(false)
+
+const isEdit = computed(() => props.item !== null)
+
+const rules = computed(() => {
+  const manualRules = {
+    
+    age: [],
+    
+    name: [],
+    
+    status: [],
+    
+  }
+
+  
+
+  return manualRules
+})
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const emptyForm: Record<string, any> = {
-};
+  
+  age: 0,
+  
+  name: ' ',
+  
+  status: 0,
+  
+}
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const form = reactive<Record<string, any>>({ ...emptyForm });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const relationOpts = reactive<Record<string, any[]>>({
 });
 
@@ -61,28 +109,12 @@ watch(() => props.item, (val) => {
   }
 }, { immediate: true });
 
-async function filterRelation(
-  val: string,
-  update: (fn: () => void) => void,
-  fieldName: string,
-  apiPath: string
-) {
-  const opts = await fetchRelationOptions(apiPath, val, 'name');
-  update(() => { relationOpts[fieldName] = opts; });
-}
 
-function onFileUploaded(info: any, fieldName: string) {
-  try {
-    const res = JSON.parse(info.xhr.responseText);
-    form[fieldName] = res?.data?.url || res?.url || '';
-  } catch { form[fieldName] = ''; }
-}
 
-function isImageUrl(url: string): boolean {
-  return /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(url);
-}
+
 
 // Parse JSON-string fields back to objects before sending to the API
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function preparePayload(data: Record<string, any>): Record<string, any> {
   const out = { ...data };
   for (const [key, val] of Object.entries(out)) {
@@ -97,6 +129,10 @@ function preparePayload(data: Record<string, any>): Record<string, any> {
   return out;
 }
 
+const { create, update } = useDemoInternalModelEntityUser();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const formRef = ref<any>(null);
+
 async function onSubmit() {
   const valid = await formRef.value?.validate();
   if (!valid) return;
@@ -104,7 +140,7 @@ async function onSubmit() {
   try {
     const payload = preparePayload({ ...form });
     if (isEdit.value) {
-      await update({ Id: props.item.Id, ...payload });
+      await update({ id: props.item.id, ...payload });
     } else {
       await create(payload);
     }

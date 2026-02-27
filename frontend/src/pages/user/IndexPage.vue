@@ -10,16 +10,16 @@
       :rows="items"
       :columns="columns"
       :loading="isLoading"
-      row-key="id"
+      row-key="Id"
       v-model:pagination="pagination"
       binary-state-sort
       @request="onRequest"
     >
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn flat dense icon="visibility" :to="'/users/' + props.row.id" />
+          <q-btn flat dense icon="visibility" :to="'/users/' + props.row.Id" />
           <q-btn flat dense icon="edit" @click="onEdit(props.row)" />
-          <q-btn flat dense icon="delete" color="negative" @click="onDelete(props.row.id)" />
+          <q-btn flat dense icon="delete" color="negative" @click="onDelete(props.row.Id)" />
         </q-td>
       </template>
     </q-table>
@@ -38,13 +38,14 @@ const $q = useQuasar();
 const { items, isLoading, pagination, onRequest, remove } = useUser();
 
 const dialogOpen = ref(false);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const editedItem = ref<any>(null);
 
 const columns = [
-  { name: 'age', label: 'Age', field: 'age', sortable: true, align: 'left' as const },
-  { name: 'id', label: 'Id', field: 'id', sortable: true, align: 'left' as const },
-  { name: 'name', label: 'Name', field: 'name', sortable: true, align: 'left' as const },
-  { name: 'status', label: 'Status', field: 'status', sortable: true, align: 'left' as const },
+  { name: 'Age', label: 'Age', field: 'Age', sortable: true, align: 'left' as const },
+  { name: 'Id', label: 'Id', field: 'Id', sortable: true, align: 'left' as const },
+  { name: 'Name', label: 'Name', field: 'Name', sortable: true, align: 'left' as const },
+  { name: 'Status', label: 'Status', field: 'Status', sortable: true, align: 'left' as const },
   { name: 'actions', label: 'Actions', field: 'actions', align: 'center' as const },
 ];
 
@@ -53,6 +54,7 @@ function onCreate() {
   dialogOpen.value = true;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onEdit(row: any) {
   editedItem.value = { ...row };
   dialogOpen.value = true;
@@ -63,14 +65,15 @@ function onSaved() {
   editedItem.value = null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onDelete(id: any) {
   $q.dialog({
     title: 'Confirm',
     message: 'Delete this user?',
     cancel: true,
     persistent: true,
-  }).onOk(async () => {
-    await remove(id);
+  }).onOk(() => {
+    void remove(id);
   });
 }
 </script>

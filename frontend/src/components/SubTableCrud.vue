@@ -35,6 +35,7 @@
               :key="col.name"
               v-model="form[col.name]"
               :label="col.label"
+              :rules="rules.value[col.name] || []"
               dense
             />
           </q-form>
@@ -52,13 +53,18 @@
 import { ref, computed } from 'vue';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
 import { useQuasar } from 'quasar';
-import api, { unwrap } from '../api/client';
+import { api, unwrap } from '../api/client';
+import { zodFormRules } from '../utils/zod-to-quasar';
 
 const props = defineProps<{
   title: string;
   apiPath: string;
   fkField: string;
   fkValue: string | number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  zodCreate?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  zodUpdate?: any;
 }>();
 
 const $q = useQuasar();
@@ -72,12 +78,14 @@ const { data: rawData, isLoading } = useQuery({
     const res = await api.get(props.apiPath, {
       params: { [props.fkField]: props.fkValue, pageSize: 200 },
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload = unwrap<any>(res);
     return Array.isArray(payload) ? payload : payload?.list || payload?.items || [];
   },
   enabled: computed(() => !!props.fkValue),
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const items = computed<any[]>(() => rawData.value || []);
 
 // Dynamic columns derived from the first data row
@@ -102,9 +110,20 @@ const editableColumns = computed(() =>
   tableColumns.value.filter((c) => c.name !== 'id' && c.name !== '_actions' && c.name !== props.fkField)
 );
 
+const isEdit = computed(() => !!editItem.value?.id)
+const rules = computed(() => {
+  const schema = isEdit.value ? props.zodUpdate : props.zodCreate
+  if (!schema || typeof schema.shape !== 'object') return {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-type-assertion
+  return zodFormRules(schema as any)
+})
+
 const dialogOpen = ref(false);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const editItem = ref<any>(null);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const form = ref<Record<string, any>>({});
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const formRef = ref<any>(null);
 const saving = ref(false);
 
@@ -114,6 +133,7 @@ function onAdd() {
   dialogOpen.value = true;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onEdit(row: any) {
   editItem.value = row;
   form.value = { ...row };
@@ -121,11 +141,13 @@ function onEdit(row: any) {
 }
 
 const { mutateAsync: createItem } = useMutation({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mutationFn: async (data: any) => unwrap(await api.post(props.apiPath, data)),
   onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKey.value }),
 });
 
 const { mutateAsync: updateItem } = useMutation({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mutationFn: async (data: any) => {
     const { id, ...body } = data;
     return unwrap(await api.put(props.apiPath + '/' + id, body));
@@ -134,6 +156,7 @@ const { mutateAsync: updateItem } = useMutation({
 });
 
 const { mutateAsync: deleteItem } = useMutation({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mutationFn: async (id: any) => unwrap(await api.delete(props.apiPath + '/' + id)),
   onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKey.value }),
 });
@@ -156,6 +179,9 @@ function onRemove(row: any) {
     message: 'Delete this item?',
     cancel: true,
     persistent: true,
-  }).onOk(() => deleteItem(row.id));
+  }).onOk(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    deleteItem(row.id);
+  });
 }
 </script>
