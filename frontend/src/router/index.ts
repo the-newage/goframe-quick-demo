@@ -24,10 +24,9 @@ export default defineRouter(function (/* { store, ssrContext } */) {
       ? createWebHistory
       : createWebHashHistory;
 
-  const allRoutes = [...routes, ...generatedRoutes];
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
-    allRoutes,
+    routes: [...routes, ...generatedRoutes],
 
     // Leave this as is and make changes in quasar.conf.js instead!
     // quasar.conf.js -> build -> vueRouterMode

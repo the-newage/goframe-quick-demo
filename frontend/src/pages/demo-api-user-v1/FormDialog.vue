@@ -50,6 +50,8 @@
 
 
 <script setup lang="ts">
+// FormDialog
+
 import { ref, reactive, computed, watch } from 'vue';
 
 import { useDemoApiUserV1 } from '../../composables/useDemoApiUserV1';
@@ -81,7 +83,7 @@ const props = defineProps<{
   item: any;
 }>();
 
-const emit = defineEmits(['saved', 'cancel']);
+const emit = defineEmits(['saved', 'cancel', 'update:modelValue']);
 
 
 const saving = ref(false);

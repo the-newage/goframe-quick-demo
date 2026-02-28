@@ -1,2 +1,7 @@
+// src/boot/vue-query.ts
 import { VueQueryPlugin } from '@tanstack/vue-query';
-export default ({ app }) => { app.use(VueQueryPlugin); };
+import { boot } from 'quasar/wrappers';
+
+export default boot(({ app }) => {
+  app.use(VueQueryPlugin);
+});
