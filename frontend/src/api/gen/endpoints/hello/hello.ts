@@ -23,7 +23,7 @@ import type {
   DemoApiHelloV1HelloRes
 } from '../../schemas';
 
-import { default } from '../../../client';
+import { customInstance } from '../../../client';
 
 
 
@@ -53,7 +53,7 @@ export const getGetHelloUrl = () => {
 
 export const getHello = async ( options?: RequestInit): Promise<getHelloResponse> => {
   
-  return default<getHelloResponse>(getGetHelloUrl(),
+  return customInstance<getHelloResponse>(getGetHelloUrl(),
   {      
     ...options,
     method: 'GET'

@@ -38,7 +38,7 @@ import type {
   PutUserIdBody
 } from '../../schemas';
 
-import { default } from '../../../client';
+import { customInstance } from '../../../client';
 
 
 
@@ -75,7 +75,7 @@ export const getGetUserUrl = (params?: GetUserParams,) => {
 
 export const getUser = async (params?: GetUserParams, options?: RequestInit): Promise<getUserResponse> => {
   
-  return default<getUserResponse>(getGetUserUrl(params),
+  return customInstance<getUserResponse>(getGetUserUrl(params),
   {      
     ...options,
     method: 'GET'
@@ -163,7 +163,7 @@ export const getPostUserUrl = () => {
 
 export const postUser = async (demoApiUserV1CreateReq: DemoApiUserV1CreateReq, options?: RequestInit): Promise<postUserResponse> => {
   
-  return default<postUserResponse>(getPostUserUrl(),
+  return customInstance<postUserResponse>(getPostUserUrl(),
   {      
     ...options,
     method: 'POST',
@@ -245,7 +245,7 @@ export const getDeleteUserIdUrl = (id: number,) => {
 
 export const deleteUserId = async (id: number, options?: RequestInit): Promise<deleteUserIdResponse> => {
   
-  return default<deleteUserIdResponse>(getDeleteUserIdUrl(id),
+  return customInstance<deleteUserIdResponse>(getDeleteUserIdUrl(id),
   {      
     ...options,
     method: 'DELETE'
@@ -326,7 +326,7 @@ export const getGetUserIdUrl = (id: number,) => {
 
 export const getUserId = async (id: number, options?: RequestInit): Promise<getUserIdResponse> => {
   
-  return default<getUserIdResponse>(getGetUserIdUrl(id),
+  return customInstance<getUserIdResponse>(getGetUserIdUrl(id),
   {      
     ...options,
     method: 'GET'
@@ -415,7 +415,7 @@ export const getPutUserIdUrl = (id: number,) => {
 export const putUserId = async (id: number,
     putUserIdBody: PutUserIdBody, options?: RequestInit): Promise<putUserIdResponse> => {
   
-  return default<putUserIdResponse>(getPutUserIdUrl(id),
+  return customInstance<putUserIdResponse>(getPutUserIdUrl(id),
   {      
     ...options,
     method: 'PUT',
