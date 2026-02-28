@@ -37,9 +37,9 @@
 
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch } from 'vue';
 
-import { useDemoInternalModelEntityUser } from '../../composables/useDemoInternalModelEntityUser'
+import { useDemoInternalModelEntityUser } from '../../composables/useDemoInternalModelEntityUser';
 
 
 
@@ -50,17 +50,19 @@ import { useDemoInternalModelEntityUser } from '../../composables/useDemoInterna
 const props = defineProps<{
   modelValue: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: any | null;
+  item: any;
 }>();
 
-const emit = defineEmits(['saved', 'cancel'])
+const emit = defineEmits(['saved', 'cancel']);
 
 
-const saving = ref(false)
+const saving = ref(false);
 
-const isEdit = computed(() => props.item !== null)
+const isEdit = computed(() => props.item !== null);
 
+// Define validation rules, combining manual and Zod-derived rules
 const rules = computed(() => {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const manualRules = {
     
     age: [],
@@ -69,31 +71,32 @@ const rules = computed(() => {
     
     status: [],
     
-  }
+  };
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   
 
-  return manualRules
-})
+  return manualRules;
+});
 
+// Initialize empty form with default values
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const emptyForm: Record<string, any> = {
   
   age: 0,
   
-  name: ' ',
+  name: '',
   
   status: 0,
   
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const form = reactive<Record<string, any>>({ ...emptyForm });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const relationOpts = reactive<Record<string, any[]>>({
-});
 
+
+// Watch for item changes to populate or reset form
 watch(() => props.item, (val) => {
   if (val) {
     const copy = { ...val };
@@ -113,7 +116,7 @@ watch(() => props.item, (val) => {
 
 
 
-// Parse JSON-string fields back to objects before sending to the API
+// Prepare form data for API submission by parsing JSON strings
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function preparePayload(data: Record<string, any>): Record<string, any> {
   const out = { ...data };
@@ -133,6 +136,7 @@ const { create, update } = useDemoInternalModelEntityUser();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const formRef = ref<any>(null);
 
+// Handle form submission for create or update operations
 async function onSubmit() {
   const valid = await formRef.value?.validate();
   if (!valid) return;

@@ -173,6 +173,7 @@ async function onSave() {
   } finally { saving.value = false; }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onRemove(row: any) {
   $q.dialog({
     title: 'Confirm',
@@ -180,8 +181,7 @@ function onRemove(row: any) {
     cancel: true,
     persistent: true,
   }).onOk(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    deleteItem(row.id);
+    void deleteItem(row.id);
   });
 }
 </script>

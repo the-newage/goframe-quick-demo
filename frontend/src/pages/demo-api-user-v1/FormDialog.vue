@@ -50,34 +50,47 @@
 
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch } from 'vue';
 
-import { useDemoApiUserV1 } from '../../composables/useDemoApiUserV1'
+import { useDemoApiUserV1 } from '../../composables/useDemoApiUserV1';
 
-import { zodFormRules } from '../../utils/zod-to-quasar'
+import { zodFormRules } from '../../utils/zod-to-quasar';
 
 
   
-    import { PostUserBody,  } from '../../api/gen/zod/user/user'
+    import { PostUserBody,  } from '../../api/gen/zod/user/user';
   
 
 
 
+
+import type { z } from 'zod';
+
+// Infer form shape from Zod schema for type safety
+type FormShape = z.infer<typeof PostUserBody >;
+
+// Adjust form data type for JSON string handling in nested objects
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+type FormData = FormShape & {
+  list: string;
+};
 
 const props = defineProps<{
   modelValue: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: any | null;
+  item: any;
 }>();
 
-const emit = defineEmits(['saved', 'cancel'])
+const emit = defineEmits(['saved', 'cancel']);
 
 
-const saving = ref(false)
+const saving = ref(false);
 
-const isEdit = computed(() => props.item !== null)
+const isEdit = computed(() => props.item !== null);
 
+// Define validation rules, combining manual and Zod-derived rules
 const rules = computed(() => {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const manualRules = {
     
     Age: [
@@ -92,42 +105,44 @@ const rules = computed(() => {
     
     list: [],
     
-  }
+  };
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   
   const schema = isEdit.value
     ? null
-    : PostUserBody
+    : PostUserBody;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (schema && typeof (schema as any).shape === 'object') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return { ...manualRules, ...zodFormRules(schema as any) }
+    return { ...manualRules, ...zodFormRules(schema as any) };
   }
   
 
-  return manualRules
-})
+  return manualRules;
+});
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const emptyForm: Record<string, any> = {
+// Initialize empty form with default values
+
+const emptyForm: FormData = {
   
   Age: 0,
   
-  Name: ' ',
+  Name: '',
   
-  Status: ' ',
+  Status: '',
   
   list: '{}',
   
-}
+};
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const form = reactive<Record<string, any>>({ ...emptyForm });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const relationOpts = reactive<Record<string, any[]>>({
-});
+const form = reactive<FormData>({ ...emptyForm });
 
+
+
+// Watch for item changes to populate or reset form
 watch(() => props.item, (val) => {
   if (val) {
     const copy = { ...val };
@@ -147,9 +162,9 @@ watch(() => props.item, (val) => {
 
 
 
-// Parse JSON-string fields back to objects before sending to the API
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function preparePayload(data: Record<string, any>): Record<string, any> {
+// Prepare form data for API submission by parsing JSON strings
+
+function preparePayload(data: FormData): FormShape {
   const out = { ...data };
   for (const [key, val] of Object.entries(out)) {
     if (typeof val === 'string') {
@@ -160,13 +175,14 @@ function preparePayload(data: Record<string, any>): Record<string, any> {
       }
     }
   }
-  return out;
+  return out as FormShape;
 }
 
 const { create, update } = useDemoApiUserV1();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const formRef = ref<any>(null);
 
+// Handle form submission for create or update operations
 async function onSubmit() {
   const valid = await formRef.value?.validate();
   if (!valid) return;
